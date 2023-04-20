@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.*,java.util.*,java.sql.*,
-				java.time.LocalTime,java.time.format.DateTimeFormatter"%>
+				java.time.LocalDateTime,java.time.format.DateTimeFormatter"%>
 <%@ page import="DBDS.*" %>
 <!DOCTYPE html>
 <html>
@@ -34,15 +34,16 @@
 			ps.setString(2, userId);
 			ps.executeUpdate();
 			
-			LocalTime myDateObj = LocalTime.now();
+			LocalDateTime myDateObj = LocalDateTime.now();
 			DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 			String formattedDate = myDateObj.format(myFormatObj);
 		
-			String insert_query = "INSERT INTO modifiedBy VALUES ((?), (?), "+formattedDate+")";
+			String insert_query = "INSERT INTO modifiedBy(userId, custRepId, datetime) VALUES ((?), (?), (?))";
 			
 			PreparedStatement insert_ps = c.prepareStatement(insert_query);
 			insert_ps.setString(1, userId);
-			insert_ps.setString(2, password);
+			insert_ps.setString(2, session.getAttribute("custRepId").toString());
+			insert_ps.setString(3, formattedDate);
 			insert_ps.executeUpdate();
 			
 			%>
@@ -60,6 +61,7 @@
 		}
 		
 	} catch (Exception e) {
+		System.out.println(e);
 		%>
 		<jsp:forward page="custRepMain.jsp">
 		<jsp:param name="modifyResponse" value="Error modifying. Please try again."/> 

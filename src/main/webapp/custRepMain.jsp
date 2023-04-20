@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="DBDS.*" %>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,6 +24,55 @@
 			<% if (request.getParameter("modifyResponse") != null) { %>
 				<tr>
 					<td><p><%=request.getParameter("modifyResponse")%></p></td>
+				</tr>
+			<% } %>
+		
+		</table>
+	
+	</form>
+	
+	<h2>Answer a user's question:</h2>
+	
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String query = "SELECT * FROM question WHERE solutionDetails IS NULL";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ResultSet result = ps.executeQuery();
+		
+		if (result != null) {
+			ResultSetMetaData rsmd = result.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			while (result.next()) {
+				%> <h5> QUESTION: </h5> <%
+			    for (int i = 1; i <= columnsNumber; i++) {
+			        %> <pre> <%= result.getString(i) %>		 </pre>
+			        <%
+			    }
+			    
+			}
+		}
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching questions. Please reload the page. </pre>
+		<%
+	}
+%>
+	<form action="solutionStatus.jsp" method="post">
+
+		<table>
+			
+			<tr><td>Enter questionId:</td><td><input type=number name=questionId></td></tr>
+			<tr><td>Enter the answer:</td><td><input type=text maxlength=100 name=solutionDetails></td></tr>
+			<tr><td><input type=Submit value=Submit></td></tr>
+			
+			<% if (request.getParameter("solutionResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("solutionResponse")%></p></td>
 				</tr>
 			<% } %>
 		
