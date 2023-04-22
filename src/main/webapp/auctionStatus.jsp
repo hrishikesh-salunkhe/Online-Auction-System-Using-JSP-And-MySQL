@@ -31,31 +31,37 @@
 		String artist = request.getParameter("artist");
 		String initialPrice = request.getParameter("initialPrice");
 		String minPrice = request.getParameter("minPrice");
+		String sellerId = session.getAttribute("userId").toString();
 		
-		String query = "SELECT userId, password FROM user WHERE userId=(?) AND password=(?)";
+		String query = "INSERT INTO auctionItem(name, subcategory, length, breadth, colorType, "
+					+ "paintingStyle, description, artist, initialPrice, minPrice, sellerId) "
+					+ "VALUES((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 		
 		PreparedStatement ps = c.prepareStatement(query);
-		ps.setString(1, userId);
-		ps.setString(2, password);
-		ResultSet result = ps.executeQuery();
-		if (result.next()) {
-			session.setAttribute("userId", userId);
-			%>
-			<jsp:forward page="main.jsp">
-			<jsp:param name="userId" value="<%=userId%>"/> 
-			</jsp:forward>
-			<% //ABOVE: FORWARD TO HOME PAGE WITH CURRENT USERNAME ATTACHED
-		} else {
-			%>
-			<jsp:forward page="login.jsp">
-			<jsp:param name="loginResponse" value="Incorrect username or password."/> 
-			</jsp:forward>
-			<%
-		}
+		ps.setString(1, name);
+		ps.setString(2, subcategory);
+		ps.setString(3, length);
+		ps.setString(4, breadth);
+		ps.setString(5, colorType);
+		ps.setString(6, paintingStyle);
+		ps.setString(7, description);
+		ps.setString(8, artist);
+		ps.setString(9, initialPrice);
+		ps.setString(10, minPrice);
+		ps.setString(11, sellerId);
+		
+		ps.executeUpdate();
+		
+		%>
+		<jsp:forward page="main.jsp">
+		<jsp:param name="auctionResponse" value="Item published successfully!"/> 
+		</jsp:forward>
+		<% //ABOVE: FORWARD TO HOME PAGE WITH CURRENT USERNAME ATTACHED
+
 	} catch (Exception e) {
 		%>
-		<jsp:forward page="login.jsp">
-		<jsp:param name="loginResponse" value="Error logging in. Please try again."/> 
+		<jsp:forward page="main.jsp">
+		<jsp:param name="auctionResponse" value="Error publishing item. Please try again."/> 
 		</jsp:forward>
 		<%
 	}

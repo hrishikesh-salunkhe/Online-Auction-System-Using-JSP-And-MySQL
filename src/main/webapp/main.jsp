@@ -53,17 +53,17 @@
 			
 			<tr><td>Starting Price:</td><td><input type=number name=initialPrice></td></tr>
 			
-			<tr><td>Minimum Acceptable Price:</td><td><input type=number name=initialPrice></td></tr>
+			<tr><td>Minimum Acceptable Price:</td><td><input type=number name=minPrice></td></tr>
 			
 			<tr><td>Auction Closing Date and Time:</td><td><input type=text length=50 name=closingDateTime></td></tr>
 			
-			<tr><td>Bid Increment Amount:</td><td><input type=text length=50 name=incrementAmount></td></tr>
+			<tr><td>Bid Increment Amount:</td><td><input type=number name=incrementAmount></td></tr>
 			
 			<tr><td><input type=Submit value=Submit></td></tr>
 			
-			<% if (request.getParameter("questionResponse") != null) { %>
+			<% if (request.getParameter("auctionResponse") != null) { %>
 				<tr>
-					<td><p><%=request.getParameter("questionResponse")%></p></td>
+					<td><p><%=request.getParameter("auctionResponse")%></p></td>
 				</tr>
 			<% } %>
 		</table>
