@@ -7,6 +7,10 @@ show tables;
 -- USER:
 create table user(userId VARCHAR(10) PRIMARY KEY, password VARCHAR(20) NOT NULL);
 
+insert into user values("hrishi", "hrishi");
+insert into user values("parth", "parth");
+insert into user values("rasika", "rasika");
+
 select * from user;
 
 -- ADMIN:
@@ -40,25 +44,6 @@ create table question(questionId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, questi
 
 select * from question;
 
--- AUTO BID:
-create table autoBid(autoBidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, bidLimit FLOAT,
-					itemId INT NOT NULL, isLimitCrossed CHAR(1),
-					FOREIGN KEY (itemId) REFERENCES AuctionItem(itemId));
-
-select * from autoBid;
-
--- BID:
-create table bid(bidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId VARCHAR(10), dateTime VARCHAR(50),
-				amount FLOAT, itemId INT NOT NULL, autoBidId INT, FOREIGN KEY (itemId) REFERENCES auctionItem(itemId), 
-				FOREIGN KEY (userId) REFERENCES user(userId), FOREIGN KEY (autoBidId) REFERENCES AutoBid(autoBidId));
-
-select * from bid;
-
--- RESERVES:
-create table reserves(bidId INT, itemId INT, PRIMARY KEY(bidId, itemId),
-						FOREIGN KEY (bidId) REFERENCES bid(bidId), FOREIGN KEY (itemId) REFERENCES auctionItem(itemId));
-
-select * from reserves;
 
 -- AUCTION ITEM:
 -- colorType: (Acrylic, Oil, Watercolor, Pastel, Gouache, Encaustic, Fresco, Spray Paint, Digital)
@@ -67,9 +52,32 @@ select * from reserves;
 
 create table auctionItem(itemId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(40),
 						subcategory VARCHAR(40), length INT, breadth INT, colorType VARCHAR(20), 
-                        paintingStyle VARCHAR(20), description VARCHAR(100), artist VARCHAR(50),
+                        description VARCHAR(100), artist VARCHAR(50),
                         initialPrice FLOAT, minPrice FLOAT, closingDateTime VARCHAR(50),
 						incrementAmount FLOAT, currentBid FLOAT, sellerId VARCHAR(10) NOT NULL, buyerId VARCHAR(10),
 						FOREIGN KEY (sellerId) REFERENCES user(userId));
                         
 select * from auctionItem;
+
+drop table auctionItem;
+
+-- AUTO BID:
+create table autoBid(autoBidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, bidLimit FLOAT,
+					itemId INT NOT NULL, isLimitCrossed CHAR(1),
+					FOREIGN KEY (itemId) REFERENCES AuctionItem(itemId));
+
+select * from autoBid;
+
+
+-- BID:
+create table bid(bidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId VARCHAR(10), dateTime VARCHAR(50),
+				amount FLOAT, itemId INT NOT NULL, autoBidId INT, FOREIGN KEY (itemId) REFERENCES auctionItem(itemId), 
+				FOREIGN KEY (userId) REFERENCES user(userId), FOREIGN KEY (autoBidId) REFERENCES AutoBid(autoBidId));
+
+select * from bid; 
+
+-- RESERVES:
+create table reserves(bidId INT, itemId INT, PRIMARY KEY(bidId, itemId),
+						FOREIGN KEY (bidId) REFERENCES bid(bidId), FOREIGN KEY (itemId) REFERENCES auctionItem(itemId));
+
+select * from reserves;

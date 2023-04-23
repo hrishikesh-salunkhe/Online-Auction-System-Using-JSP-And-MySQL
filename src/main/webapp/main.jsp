@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="DBDS.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +10,9 @@
 </head>
 <body>
 	<h1> Welcome to the Online Auction System! </h1>
+	
+	
+	<!-- PUBLISH AN ITEM: -->
 	
 	<h2> Publish an item: </h2>
 	
@@ -34,9 +39,9 @@
 				</select>
 			</td></tr>
 			
-			<tr><td>Painting Style:</td>
+			<tr><td>Art Subcategory:</td>
 			<td>
-				<select name="paintingStyle">
+				<select name="subcategory">
 				  <option value="Realism">Realism</option>
 				  <option value="Photorealism">Photorealism</option>
 				  <option value="Expressionism">Expressionism</option>
@@ -69,6 +74,11 @@
 		</table>
 	</form>
 	
+	
+	
+	
+	<!-- ASK A QUESTION: -->
+	
 	<h2> Ask a question: </h2>
 	
 	<form action="questionStatus.jsp" method="post">
@@ -83,6 +93,64 @@
 			<% } %>
 		</table>
 	</form>
+	
+	
+	
+	
+	<!-- PLACE A BID: -->
+	
+	<h2>Place a bid on an auction item:</h2>
+	
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String query = "SELECT * FROM auctionItem";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ResultSet result = ps.executeQuery();
+		
+		if (result != null) {
+			ResultSetMetaData rsmd = result.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			while (result.next()) {
+				%> <h5> Auction Item: </h5> <%
+			    String auctionItem = "";
+				for (int i = 1; i <= columnsNumber; i++) {
+					auctionItem += result.getString(i) + "    ";
+			    }
+				%> <pre> <%= auctionItem %>		 </pre>
+		        <%
+			}
+		}
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching auction items. Please reload the page. </pre>
+		<%
+	}
+%>
+
+	<form action="bidStatus.jsp" method="post">
+
+		<table>
+			
+			<tr><td>Enter itemId:</td><td><input type=number name=itemId></td></tr>
+			<tr><td>Enter bid value:</td><td><input type=number name=bidAmount></td></tr>
+			
+			<tr><td><input type=Submit value="Place Bid"></td></tr>
+			
+			<% if (request.getParameter("bidResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("bidResponse")%></p></td>
+				</tr>
+			<% } %>
+		
+		</table>
+	
+	</form>
+	
 	
 	<h2> Logout: </h2>
 	

@@ -48,11 +48,12 @@
 			int columnsNumber = rsmd.getColumnCount();
 			while (result.next()) {
 				%> <h5> QUESTION: </h5> <%
-			    for (int i = 1; i <= columnsNumber; i++) {
-			        %> <pre> <%= result.getString(i) %>		 </pre>
-			        <%
+			    String question = "";
+				for (int i = 1; i <= columnsNumber; i++) {
+			        question += result.getString(i) + "    ";
 			    }
-			    
+				%> <pre> <%= question %>		 </pre>
+		        <%
 			}
 		}
 	} catch (Exception e) {
@@ -73,6 +74,55 @@
 			<% if (request.getParameter("solutionResponse") != null) { %>
 				<tr>
 					<td><p><%=request.getParameter("solutionResponse")%></p></td>
+				</tr>
+			<% } %>
+		
+		</table>
+	
+	</form>
+	
+	<h2>Delist an Auction Item:</h2>
+	
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String query = "SELECT * FROM auctionItem";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ResultSet result = ps.executeQuery();
+		
+		if (result != null) {
+			ResultSetMetaData rsmd = result.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			while (result.next()) {
+				%> <h5> Auction Item: </h5> <%
+			    String auctionItem = "";
+				for (int i = 1; i <= columnsNumber; i++) {
+					auctionItem += result.getString(i) + "    ";
+			    }
+				%> <pre> <%= auctionItem %>		 </pre>
+		        <%
+			}
+		}
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching questions. Please reload the page. </pre>
+		<%
+	}
+%>
+	<form action="delistStatus.jsp" method="post">
+
+		<table>
+			
+			<tr><td>Enter itemId:</td><td><input type=number name=itemId></td></tr>
+			<tr><td><input type=Submit value=Delist></td></tr>
+			
+			<% if (request.getParameter("delistResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("delistResponse")%></p></td>
 				</tr>
 			<% } %>
 		

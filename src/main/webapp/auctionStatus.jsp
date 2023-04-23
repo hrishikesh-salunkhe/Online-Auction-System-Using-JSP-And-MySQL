@@ -26,16 +26,17 @@
 		String length = request.getParameter("length");
 		String breadth = request.getParameter("breadth");
 		String colorType = request.getParameter("colorType");
-		String paintingStyle = request.getParameter("paintingStyle");
 		String description = request.getParameter("description");
 		String artist = request.getParameter("artist");
 		String initialPrice = request.getParameter("initialPrice");
+		String closingDateTime = request.getParameter("closingDateTime");
+		String incrementAmount = request.getParameter("incrementAmount");
 		String minPrice = request.getParameter("minPrice");
 		String sellerId = session.getAttribute("userId").toString();
 		
 		String query = "INSERT INTO auctionItem(name, subcategory, length, breadth, colorType, "
-					+ "paintingStyle, description, artist, initialPrice, minPrice, sellerId) "
-					+ "VALUES((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+					+ "description, artist, initialPrice, closingDateTime, incrementAmount, minPrice, sellerId) "
+					+ "VALUES((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		ps.setString(1, name);
@@ -43,12 +44,13 @@
 		ps.setString(3, length);
 		ps.setString(4, breadth);
 		ps.setString(5, colorType);
-		ps.setString(6, paintingStyle);
-		ps.setString(7, description);
-		ps.setString(8, artist);
-		ps.setString(9, initialPrice);
-		ps.setString(10, minPrice);
-		ps.setString(11, sellerId);
+		ps.setString(6, description);
+		ps.setString(7, artist);
+		ps.setString(8, initialPrice);
+		ps.setString(9, closingDateTime);
+		ps.setString(10, incrementAmount);
+		ps.setString(11, minPrice);
+		ps.setString(12, sellerId);
 		
 		ps.executeUpdate();
 		
@@ -59,6 +61,7 @@
 		<% //ABOVE: FORWARD TO HOME PAGE WITH CURRENT USERNAME ATTACHED
 
 	} catch (Exception e) {
+		System.out.println(e);
 		%>
 		<jsp:forward page="main.jsp">
 		<jsp:param name="auctionResponse" value="Error publishing item. Please try again."/> 
