@@ -27,13 +27,9 @@
 				
 		if (result.next()) {
 			
-			System.out.println("Reached here");
-			
 			int currentBid = Integer.parseInt(result.getString(1));
 			int incrementAmount = Integer.parseInt(result.getString(2));
 			int minPrice = Integer.parseInt(result.getString(3));
-			
-			System.out.println("Reached here 2");
 			
 			
 	/* 		CONDITIONS TO CHECK BEFORE PLACING A BID:
@@ -48,16 +44,10 @@
 			ps.setString(2, userId);
 			ps.setString(3, itemId);
 			
-			System.out.println("Reached here 3");
-			
-			
 			ps.executeUpdate();
 			
-			System.out.println("Reached here 4");
-			
-			
 			%>
-			<jsp:forward page="main.jsp">
+			<jsp:forward page="searchResults.jsp">
 			<jsp:param name="bidResponse" value="Bid placed successfully!"/> 
 			</jsp:forward>
 			<% //ABOVE: FORWARD TO HOME PAGE WITH CURRENT USERNAME ATTACHED
@@ -65,7 +55,7 @@
 		}else{
 			
 			%>
-			<jsp:forward page="main.jsp">
+			<jsp:forward page="searchResults.jsp">
 			<jsp:param name="bidResponse" value="Item ID not found. Please try again."/> 
 			</jsp:forward>
 			<%
@@ -74,7 +64,7 @@
 	} catch (Exception e) {
 		System.out.println(e);
 		%>
-		<jsp:forward page="main.jsp">
+		<jsp:forward page="searchResults.jsp">
 		<jsp:param name="bidResponse" value="Error while placing a bid. Please try again."/> 
 		</jsp:forward>
 		<%

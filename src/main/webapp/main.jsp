@@ -12,6 +12,92 @@
 	<h1> Welcome to the Online Auction System! </h1>
 	
 	
+	
+	
+	
+	
+	
+	<!-- LISTING ALERT: -->
+	
+	<h2>Listing Alert!</h2>
+	
+	<h4>The items you were looking for are here!</h4>
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String userId = session.getAttribute("userId").toString();
+		
+		String query = "SELECT * FROM listingAlerts WHERE userId=(?)";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ps.setString(1, userId);
+		ResultSet result = ps.executeQuery();
+		
+		if (result != null) {
+			
+			while (result.next()) {
+				
+				String subcategory = result.getString("subcategory");
+				int lengthFrom = Integer.parseInt(result.getString("lengthFrom"));
+				int lengthTo = Integer.parseInt(result.getString("lengthTo"));
+				int breadthFrom = Integer.parseInt(result.getString("breadthFrom"));
+				int breadthTo = Integer.parseInt(result.getString("breadthTo"));
+				String colorType = result.getString("colorType");
+				int initialPriceFrom = Integer.parseInt(result.getString("initialPriceFrom"));
+				int initialPriceTo = Integer.parseInt(result.getString("initialPriceTo"));
+				
+				String queryCheck = "SELECT * FROM auctionItem WHERE subcategory=(?)"
+									+ " AND (?) <= length <= (?) AND (?) <= breadth <= (?)"
+									+ " AND colorType=(?) AND (?) <= initialPrice <= (?)";
+				
+				PreparedStatement psCheck = c.prepareStatement(queryCheck);
+				psCheck.setString(1, subcategory);
+				psCheck.setInt(2, lengthFrom);
+				psCheck.setInt(3, lengthTo);
+				psCheck.setInt(4, breadthFrom);
+				psCheck.setInt(5, breadthTo);
+				psCheck.setString(6, colorType);
+				psCheck.setInt(7, initialPriceFrom);
+				psCheck.setInt(8, initialPriceTo);
+				
+				ResultSet resultCheck = psCheck.executeQuery();
+				
+				if (resultCheck != null) {
+					
+					ResultSetMetaData rsmdCheck = resultCheck.getMetaData();
+					int columnsNumber = rsmdCheck.getColumnCount();
+					while (resultCheck.next()) {
+				
+						%> <h5> Auction Item: </h5> <%
+					    String auctionItem = "";
+						for (int i = 1; i <= columnsNumber; i++) {
+							auctionItem += rsmdCheck.getColumnLabel(i) +": "+ resultCheck.getString(i) + "    ";
+					    }
+						%> <pre> <%= auctionItem %>		 </pre>
+				        <%
+				       
+					}
+					
+				}
+			}
+		}
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching auction items. Please reload the page. </pre>
+		<%
+	}
+%>
+	
+	
+	
+	
+	
+	
+	
+	
 	<!-- PUBLISH AN ITEM: -->
 	
 	<h2> Publish an item: </h2>
@@ -60,7 +146,7 @@
 			
 			<tr><td>Minimum Acceptable Price:</td><td><input type=number name=minPrice></td></tr>
 			
-			<tr><td>Auction Closing Date and Time:</td><td><input type=text length=50 name=closingDateTime></td></tr>
+			<tr><td>Auction Closing Date and Time:</td><td><input type=text maxlength=50 name=closingDateTime></td></tr>
 			
 			<tr><td>Bid Increment Amount:</td><td><input type=number name=incrementAmount></td></tr>
 			
@@ -73,6 +159,10 @@
 			<% } %>
 		</table>
 	</form>
+	
+	
+	
+	
 	
 	
 	
@@ -97,63 +187,198 @@
 	
 	
 	
-	<!-- PLACE A BID: -->
 	
-	<h2>Place a bid on an auction item:</h2>
 	
-<%
-	try {
-		ApplicationDB db = new ApplicationDB();	
-		Connection c = db.getConnection();
-		
-		String query = "SELECT * FROM auctionItem";
-		
-		PreparedStatement ps = c.prepareStatement(query);
-		ResultSet result = ps.executeQuery();
-		
-		if (result != null) {
-			ResultSetMetaData rsmd = result.getMetaData();
-			int columnsNumber = rsmd.getColumnCount();
-			while (result.next()) {
-				%> <h5> Auction Item: </h5> <%
-			    String auctionItem = "";
-				for (int i = 1; i <= columnsNumber; i++) {
-					auctionItem += result.getString(i) + "    ";
-			    }
-				%> <pre> <%= auctionItem %>		 </pre>
-		        <%
-			}
-		}
-	} catch (Exception e) {
-		System.out.println(e);
-		%>
-		<pre> Error fetching auction items. Please reload the page. </pre>
-		<%
-	}
-%>
-
-	<form action="bidStatus.jsp" method="post">
-
+	
+	
+	
+	
+	
+	<!-- SEE ALL AUCTION ITEMS: -->
+	
+	<h2>See all Auction Items:</h2>
+	
+	<form action="auctionResults.jsp" method="post">
 		<table>
+			<tr><td><input type=Submit value=View></td></tr>
 			
-			<tr><td>Enter itemId:</td><td><input type=number name=itemId></td></tr>
-			<tr><td>Enter bid value:</td><td><input type=number name=bidAmount></td></tr>
-			
-			<tr><td><input type=Submit value="Place Bid"></td></tr>
-			
-			<% if (request.getParameter("bidResponse") != null) { %>
+			<% if (request.getParameter("auctionResponse") != null) { %>
 				<tr>
-					<td><p><%=request.getParameter("bidResponse")%></p></td>
+					<td><p><%=request.getParameter("auctionResponse")%></p></td>
 				</tr>
 			<% } %>
-		
+			
 		</table>
-	
 	</form>
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- SEARCH FOR AN ITEM: -->
+	
+	<h2> Search for an item: </h2>
+	
+	<form action="searchResults.jsp" method="post">
+		<table>
+			<tr><td>Art Subcategory:</td>
+			<td>
+				<select required name="subcategory">
+				  <option value="Realism">Realism</option>
+				  <option value="Photorealism">Photorealism</option>
+				  <option value="Expressionism">Expressionism</option>
+				  <option value="Impressionism">Impressionism</option>
+				  <option value="Abstract">Abstract</option>
+				  <option value="Surrealism">Surrealism</option>
+				  <option value="Pop Art">Pop Art</option>
+				</select>
+			</td></tr>
+			
+			<tr>
+				<td>Art Length Range:</td><td><input required type=number name=lengthFrom></td>
+				<td> to: </td><td><input required type=number name=lengthTo></td>
+			</tr>
+			
+			<tr>
+				<td>Art Breadth Range:</td><td><input required type=number name=breadthFrom></td>
+				<td> to: </td><td><input required type=number name=breadthTo></td>
+			</tr>
+			
+			<tr><td>Color Type:</td>
+			<td>
+				<select required name="colorType">
+				  <option value="Acrylic">Acrylic</option>
+				  <option value="Oil">Oil</option>
+				  <option value="Watercolor">Watercolor</option>
+				  <option value="Gouache">Gouache</option>
+				  <option value="Encaustic">Encaustic</option>
+				  <option value="Fresco">Fresco</option>
+				  <option value="Spray Paint">Spray Paint</option>
+				  <option value="Digital">Digital</option>
+				  <option value="Pastel">Pastel</option>
+				</select>
+			</td></tr>
+			
+			<tr>
+				<td>Starting Price Range:</td><td><input required type=number name=initialPriceFrom></td>
+				<td> to: </td><td><input required type=number name=initialPriceTo></td>
+			</tr>
+			
+			<tr><td><input type=Submit value=Search></td></tr>
+			
+			<% if (request.getParameter("searchResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("searchResponse")%></p></td>
+				</tr>
+			<% } %>
+			
+		</table>
+	</form>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- SET A LISTING ALERT: -->
+	
+	<h2> Set a Listing Alert: </h2>
+	
+	<form action="alertStatus.jsp" method="post">
+		<table>
+			<tr><td>Art Subcategory:</td>
+			<td>
+				<select required name="subcategory">
+				  <option value="Realism">Realism</option>
+				  <option value="Photorealism">Photorealism</option>
+				  <option value="Expressionism">Expressionism</option>
+				  <option value="Impressionism">Impressionism</option>
+				  <option value="Abstract">Abstract</option>
+				  <option value="Surrealism">Surrealism</option>
+				  <option value="Pop Art">Pop Art</option>
+				</select>
+			</td></tr>
+			
+			<tr>
+				<td>Art Length Range:</td><td><input required type=number name=lengthFrom></td>
+				<td> to: </td><td><input required type=number name=lengthTo></td>
+			</tr>
+			
+			<tr>
+				<td>Art Breadth Range:</td><td><input required type=number name=breadthFrom></td>
+				<td> to: </td><td><input required type=number name=breadthTo></td>
+			</tr>
+			
+			<tr><td>Color Type:</td>
+			<td>
+				<select required name="colorType">
+				  <option value="Acrylic">Acrylic</option>
+				  <option value="Oil">Oil</option>
+				  <option value="Watercolor">Watercolor</option>
+				  <option value="Gouache">Gouache</option>
+				  <option value="Encaustic">Encaustic</option>
+				  <option value="Fresco">Fresco</option>
+				  <option value="Spray Paint">Spray Paint</option>
+				  <option value="Digital">Digital</option>
+				  <option value="Pastel">Pastel</option>
+				</select>
+			</td></tr>
+			
+			<tr>
+				<td>Starting Price Range:</td><td><input required type=number name=initialPriceFrom></td>
+				<td> to: </td><td><input required type=number name=initialPriceTo></td>
+			</tr>
+			
+			<tr><td><input type=Submit value=Search></td></tr>
+			
+			<% if (request.getParameter("alertResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("alertResponse")%></p></td>
+				</tr>
+			<% } %>
+			
+		</table>
+	</form>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- LOGOUT: -->
 	
 	<h2> Logout: </h2>
 	
 	<a href="logout.jsp">Logout</a>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- DELETE ACCOUNT: -->
+	
+	<h2> Delete Account: </h2>
+	
+	<a href="delete.jsp">DELETE ACCOUNT</a>
 </body>
 </html>

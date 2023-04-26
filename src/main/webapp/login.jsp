@@ -21,10 +21,18 @@
 		<td><p><%=request.getParameter("loginResponse")%></p></td>
 	</tr>
 <% } %>
+
+<% if (request.getParameter("deleteResponse") != null) { %>
+	<tr>
+		<td><p><%=request.getParameter("deleteResponse")%></p></td>
+	</tr>
+<% } %>
+
 </table>
 
-<p> Admin? </p> <a href="adminLogin.jsp">Click Here</a><br/>
-<p> Customer Representative? </p> <a href="custRepLogin.jsp">Click Here</a>
+<p> New User? <a href="signUp.jsp">Create Account</a> </p>
+<p> Admin? <a href="adminLogin.jsp">Click Here</a> </p> 
+<p> Customer Representative? <a href="custRepLogin.jsp">Click Here</a> </p>
 </form>
 </body>
 </html>

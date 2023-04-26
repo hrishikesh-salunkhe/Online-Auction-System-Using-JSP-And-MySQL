@@ -23,8 +23,8 @@
 <% } %>
 </table>
 
-<p> User? </p> <a href="login.jsp">Click Here</a><br/>
-<p> Customer Representative? </p> <a href="custRepLogin.jsp">Click Here</a>
+<p> User? <a href="login.jsp">Click Here</a></p> 
+<p> Customer Representative? <a href="custRepLogin.jsp">Click Here</a></p> 
 </form>
 </body>
 </html>

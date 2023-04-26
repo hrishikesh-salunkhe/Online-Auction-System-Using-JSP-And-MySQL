@@ -81,3 +81,11 @@ create table reserves(bidId INT, itemId INT, PRIMARY KEY(bidId, itemId),
 						FOREIGN KEY (bidId) REFERENCES bid(bidId), FOREIGN KEY (itemId) REFERENCES auctionItem(itemId));
 
 select * from reserves;
+
+-- LISTING ALERTS:
+create table listingAlerts(alertId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, listerId VARCHAR(10),
+							subcategory VARCHAR(40), lengthFrom INT, lengthTo INT, breadthFrom INT, breadthTo INT,
+                            colorType VARCHAR(20), initialPriceFrom FLOAT, initialPriceTo FLOAT,
+							FOREIGN KEY (listerId) REFERENCES user(userId))
+                            
+select * from listingAlerts;
