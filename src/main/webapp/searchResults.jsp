@@ -14,6 +14,8 @@
 		ApplicationDB db = new ApplicationDB();	
 		Connection c = db.getConnection();
 		
+		String userId = session.getAttribute("userId").toString();
+		
 		String subcategory = request.getParameter("subcategory");
 		String lengthFrom = request.getParameter("lengthFrom");
 		String breadthFrom = request.getParameter("breadthFrom");
@@ -24,7 +26,8 @@
 		String initialPriceTo = request.getParameter("initialPriceTo");
 		
 		String query = "SELECT * FROM auctionItem WHERE subcategory=(?) AND (?) <= length <= (?)"
-						+ " AND (?) <= breadth <= (?) AND colorType=(?) AND (?) <= initialPrice <= (?)";
+						+ " AND (?) <= breadth <= (?) AND colorType=(?) AND (?) <= initialPrice <= (?)"
+						+ " AND sellerId <> (?)";
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		
@@ -36,6 +39,7 @@
 		ps.setString(6, colorType);
 		ps.setString(7, initialPriceFrom);
 		ps.setString(8, initialPriceTo);
+		ps.setString(9, userId);
 		ResultSet result = ps.executeQuery();
 		
 		if (result != null) {
@@ -84,6 +88,21 @@
 		</table>
 	
 	</form>
+	
+	
+
+
+<!-- HOME PAGE: -->
+	
+	<a href="main.jsp">Home Page</a>
+	
+	
+	
+	
+	
+<!-- LOGOUT: -->
+	
+	<a href="logout.jsp">Logout</a>
 	
 </body>
 </html>

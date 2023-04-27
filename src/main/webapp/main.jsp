@@ -19,9 +19,6 @@
 	
 	<!-- LISTING ALERT: -->
 	
-	<h2>Listing Alert!</h2>
-	
-	<h4>The items you were looking for are here!</h4>
 <%
 	try {
 		ApplicationDB db = new ApplicationDB();	
@@ -36,7 +33,7 @@
 		ResultSet result = ps.executeQuery();
 		
 		if (result != null) {
-			
+					
 			while (result.next()) {
 				
 				String subcategory = result.getString("subcategory");
@@ -50,7 +47,8 @@
 				
 				String queryCheck = "SELECT * FROM auctionItem WHERE subcategory=(?)"
 									+ " AND (?) <= length <= (?) AND (?) <= breadth <= (?)"
-									+ " AND colorType=(?) AND (?) <= initialPrice <= (?)";
+									+ " AND colorType=(?) AND (?) <= initialPrice <= (?)"
+									+ " AND sellerId <> (?)";
 				
 				PreparedStatement psCheck = c.prepareStatement(queryCheck);
 				psCheck.setString(1, subcategory);
@@ -61,14 +59,20 @@
 				psCheck.setString(6, colorType);
 				psCheck.setInt(7, initialPriceFrom);
 				psCheck.setInt(8, initialPriceTo);
+				psCheck.setString(9, userId);
 				
 				ResultSet resultCheck = psCheck.executeQuery();
 				
-				if (resultCheck != null) {
+				if (resultCheck.next()) {
 					
+					%> <h2>Listing Alert!</h2>
+					
+						<h4>The items you were looking for are here!</h4>
+					<%
+			
 					ResultSetMetaData rsmdCheck = resultCheck.getMetaData();
 					int columnsNumber = rsmdCheck.getColumnCount();
-					while (resultCheck.next()) {
+					do {
 				
 						%> <h5> Auction Item: </h5> <%
 					    String auctionItem = "";
@@ -78,7 +82,7 @@
 						%> <pre> <%= auctionItem %>		 </pre>
 				        <%
 				       
-					}
+					} while (resultCheck.next());
 					
 				}
 			}
@@ -97,7 +101,55 @@
 	
 	
 	
+	<!-- QUESTIONS ANSWERED: -->
 	
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String userId = session.getAttribute("userId").toString();
+		
+		String query = "SELECT * FROM question WHERE userId=(?) AND solutionDetails IS NOT NULL";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ps.setString(1, userId);
+		ResultSet result = ps.executeQuery();
+		
+		if (result.next()) {
+			
+			ResultSetMetaData rsmd = result.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+					
+			%> <h2> Your Questions have been Answered! </h2> <%
+		    do {
+				
+				%> <h4> Question: </h4> <%
+			    String question = "";
+				question += rsmd.getColumnLabel(2) + ": " + result.getString(2) + "    ";
+				question += rsmd.getColumnLabel(3) + ": " + result.getString(3) + "    ";
+				question += rsmd.getColumnLabel(4) + ": " + result.getString(4) + "    ";
+			    %> <pre> <%= question %>		 </pre>
+		        <%
+				
+			} while (result.next());
+		}
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching questions answered. Please reload the page. </pre>
+		<%
+	}
+%>
+
+
+
+
+
+
+
+
+
 	<!-- PUBLISH AN ITEM: -->
 	
 	<h2> Publish an item: </h2>
@@ -184,6 +236,66 @@
 		</table>
 	</form>
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- BROWSE HISTORY OF BIDS: -->
+	
+	<h2> Browse History of Bids: </h2>
+	
+	
+	
+	<h4> History of a specific auction: </h4>
+	
+	<form action="auctionHistory.jsp" method="post">
+		<table>
+			<tr><td>Enter item ID:</td><td><input required type=number name=itemId></td></tr>
+			<tr><td><input type=Submit value=Submit></td></tr>
+			
+			<% if (request.getParameter("auctionHistoryResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("auctionHistoryResponse")%></p></td>
+				</tr>
+			<% } %>
+		</table>
+	</form>
+	
+	
+	<h4> History of a specific user: </h4>
+	
+	<form action="userHistory.jsp" method="post">
+		<table>
+			<tr><td>Enter a user ID:</td><td><input required type=text maxlength=10 name=userId></td></tr>
+			<tr><td><input type=Submit value=Submit></td></tr>
+			
+			<% if (request.getParameter("userHistoryResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("userHistoryResponse")%></p></td>
+				</tr>
+			<% } %>
+		</table>
+	</form>
+	
+	<h4> History of similar auction items: </h4>
+	
+	<form action="similarHistory.jsp" method="post">
+		<table>
+			<tr><td>Enter an item ID:</td><td><input required type=number name=itemId></td></tr>
+			<tr><td><input type=Submit value=Submit></td></tr>
+			
+			<% if (request.getParameter("similarHistoryResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("similarHistoryResponse")%></p></td>
+				</tr>
+			<% } %>
+		</table>
+	</form>
 	
 	
 	
@@ -358,27 +470,24 @@
 	
 	
 	
-	
+	<br/>
 	
 	
 	<!-- LOGOUT: -->
-	
-	<h2> Logout: </h2>
 	
 	<a href="logout.jsp">Logout</a>
 	
 	
 	
 	
-	
+	<br/>
+	<br/>
 	
 	
 	
 	
 	<!-- DELETE ACCOUNT: -->
 	
-	<h2> Delete Account: </h2>
-	
-	<a href="delete.jsp">DELETE ACCOUNT</a>
+	<a href="deleteStatus.jsp">DELETE ACCOUNT</a>
 </body>
 </html>

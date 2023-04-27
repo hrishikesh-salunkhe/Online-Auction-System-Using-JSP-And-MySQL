@@ -14,9 +14,12 @@
 		ApplicationDB db = new ApplicationDB();	
 		Connection c = db.getConnection();
 		
-		String query = "SELECT * FROM auctionItem";
+		String userId = session.getAttribute("userId").toString();
+		
+		String query = "SELECT * FROM auctionItem WHERE sellerId <> (?)";
 		
 		PreparedStatement ps = c.prepareStatement(query);
+		ps.setString(1, userId);
 		
 		ResultSet result = ps.executeQuery();
 		
@@ -44,6 +47,13 @@
 	}
 %>
 
+
+
+
+
+
+
+
 	<!-- PLACE A BID: -->
 	
 	<h2>Place a bid on an auction item:</h2>
@@ -52,8 +62,17 @@
 
 		<table>
 			
-			<tr><td>Enter itemId:</td><td><input type=number name=itemId></td></tr>
-			<tr><td>Enter bid value:</td><td><input type=number name=bidAmount></td></tr>
+			<tr><td>Enter itemId:</td><td><input required type=number name=itemId></td></tr>
+			<tr><td>Enter bid value:</td><td><input required type=number name=bidAmount></td></tr>
+			<tr><td>Enable Auto-Bidding?:</td>
+			<td>
+				<select required name="autoBid">
+				  <option value="yes">Yes</option>
+				  <option selected value="no">No</option>
+				</select>
+			</td></tr>
+			<tr><td>Auto-Bid Upper Limit:</td><td><input required type=number value=0 name=upperLimit></td></tr>
+			
 			
 			<tr><td><input type=Submit value="Place Bid"></td></tr>
 			
@@ -66,6 +85,22 @@
 		</table>
 	
 	</form>
+	
+	
+	
+
+<!-- HOME PAGE: -->
+	
+	<a href="main.jsp">Home Page</a>
+	
+	
+	
+	
+	
+<!-- LOGOUT: -->
+	
+	<a href="logout.jsp">Logout</a>
+	
 	
 </body>
 </html>

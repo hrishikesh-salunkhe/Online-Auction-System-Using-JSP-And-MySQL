@@ -9,6 +9,12 @@
 <body>
 	<h1> Welcome to the Admin Panel! </h1>
 	
+	
+	
+	
+	
+	<!-- ASSIGN A NEW CR -->
+	
 	<h2>Assign a new Customer Representative:</h2>
 	
 	<br/>
@@ -30,6 +36,35 @@
 	</table>
 
 </form>
+
+
+
+
+
+<br/>
+
+<!-- GENERATE SALES REPORT -->
+
+<h2>Generate Sales Report:</h2>
+	
+	
+<form action="salesReport.jsp" method="post">
+
+	<table>
+		
+		<tr><td><input type=Submit value=Generate></td></tr>
+		
+		<% if (request.getParameter("reportResponse") != null) { %>
+			<tr>
+				<td><p><%=request.getParameter("reportResponse")%></p></td>
+			</tr>
+		<% } %>
+	
+	</table>
+
+</form>
+
+<br/>
 	
 	<a href="adminLogout.jsp">Logout</a>
 </body>
