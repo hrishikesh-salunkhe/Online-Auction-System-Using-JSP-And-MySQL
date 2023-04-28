@@ -76,12 +76,20 @@
 			
 			<tr><td>Enter itemId:</td><td><input type=number name=itemId></td></tr>
 			<tr><td>Enter bid value:</td><td><input type=number name=bidAmount></td></tr>
+			<tr><td>Enable Auto-Bidding?:</td>
+			<td>
+				<select required name="autoBid">
+				  <option value="yes">Yes</option>
+				  <option selected value="no">No</option>
+				</select>
+			</td></tr>
+			<tr><td>Auto-Bid Upper Limit:</td><td><input required type=number value=0 name=upperLimit></td></tr>
 			
 			<tr><td><input type=Submit value="Place Bid"></td></tr>
 			
-			<% if (request.getParameter("bidResponse") != null) { %>
+			<% if (request.getParameter("searchBidResponse") != null) { %>
 				<tr>
-					<td><p><%=request.getParameter("bidResponse")%></p></td>
+					<td><p><%=request.getParameter("searchBidResponse")%></p></td>
 				</tr>
 			<% } %>
 		

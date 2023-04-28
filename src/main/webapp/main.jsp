@@ -17,6 +17,78 @@
 	
 	
 	
+	<!-- UPPER LIMIT REACHED ALERT: -->
+	
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String userId = session.getAttribute("userId").toString();
+		
+		String query = "SELECT * FROM autoBid WHERE userId=(?)";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ps.setString(1, userId);
+		ResultSet result = ps.executeQuery();
+		
+		if (result.next()) {
+			
+			int printFlag = 0;
+			do {
+				
+				if (result.getString("isLimitCrossed").equals("Y")) {
+					
+					System.out.println(result.getString("itemId"));
+					if(printFlag == 0){
+						printFlag = 1;
+						%><h2>Auto-Bid Limit Crossed Alert!</h2>
+						<%
+					}
+					%> 
+						<h4>Someone has placed a higher bid than the upper limit you have set for auto-bidding:</h4>
+					<%
+			
+					String itemId = result.getString("itemId");
+					
+					String queryCheck = "SELECT * FROM auctionItem WHERE itemId=(?)";
+					
+					PreparedStatement psCheck = c.prepareStatement(queryCheck);
+					psCheck.setString(1, itemId);
+					ResultSet resultCheck = psCheck.executeQuery();
+					
+					ResultSetMetaData rsmd = resultCheck.getMetaData();
+					
+					int columnsNumber = rsmd.getColumnCount();
+					while (resultCheck.next()){
+				
+						String auctionItem = "";
+						for (int i = 1; i <= columnsNumber; i++) {
+							auctionItem += rsmd.getColumnLabel(i) +": "+ resultCheck.getString(i) + "    ";
+					    }
+						%> <pre> <%= auctionItem %>		 </pre>
+				        <%
+				       
+					}
+					
+				}
+			} while (result.next());
+		}
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching auction items. Please reload the page. </pre>
+		<%
+	}
+%>
+
+
+
+
+
+
+
+
 	<!-- LISTING ALERT: -->
 	
 <%
@@ -308,7 +380,7 @@
 	
 	<!-- SEE ALL AUCTION ITEMS: -->
 	
-	<h2>See all Auction Items:</h2>
+	<h2>See all Auction Items and Place a Bid:</h2>
 	
 	<form action="auctionResults.jsp" method="post">
 		<table>
@@ -334,7 +406,7 @@
 	
 	<!-- SEARCH FOR AN ITEM: -->
 	
-	<h2> Search for an item: </h2>
+	<h2> Search for an item and Place a Bid: </h2>
 	
 	<form action="searchResults.jsp" method="post">
 		<table>
