@@ -122,7 +122,9 @@
 				%> <h5> Auction Item: </h5> <%
 				String auctionItem = "";
 				for (int i = 1; i <= columnsNumber; i++) {
-					auctionItem += rsmd.getColumnLabel(i) + ": " + result.getString(i) + "    ";
+					if(!rsmd.getColumnLabel(i).equals("minPrice")){
+						auctionItem += rsmd.getColumnLabel(i) +": "+ result.getString(i) + "    ";	
+					}
 			    }
 				%> <pre> <%= auctionItem %>		 </pre>
 		        <%

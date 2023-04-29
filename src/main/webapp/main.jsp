@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="java.io.*,java.util.*,java.util.Date,java.text.SimpleDateFormat,java.sql.*"%>
 <%@ page import="DBDS.*" %>
 <!DOCTYPE html>
 <html>
@@ -17,6 +17,130 @@
 	
 	
 	
+	<!-- AUCTION CLOSING AND CHOOSING WINNER: -->
+	
+<%
+	try {
+		ApplicationDB db = new ApplicationDB();	
+		Connection c = db.getConnection();
+		
+		String userId = session.getAttribute("userId").toString();
+		
+		
+		
+		
+		/* ENTER DATE HERE FOR TESTING */
+		
+		String dateToday="30-04-2023 21:30:00";  
+		
+	    Date date=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(dateToday);
+	     
+	    
+	    /* FETCHING OPEN AUCTION DATA: */
+	    
+		String query = "SELECT * FROM auctionItem WHERE isClosed=(?)";
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ps.setString(1, "N");
+		
+		ResultSet result = ps.executeQuery();
+		
+		if(result.next()){
+			
+			do{
+				
+				String auctionDate = result.getString("closingDateTime");
+				
+				Date aucDate = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(auctionDate);
+			    
+				
+				
+				/* CLOSING THE AUCTION: */
+				
+				if(aucDate.before(date)){
+					
+					String queryUpdate = "UPDATE auctionItem SET isClosed=(?) WHERE itemId=(?)";
+					
+					PreparedStatement psUpdate = c.prepareStatement(queryUpdate);
+					psUpdate.setString(1, "Y");
+					psUpdate.setString(2, result.getString("itemId"));
+					
+					psUpdate.executeUpdate();
+					
+					int currentBid = Integer.parseInt(result.getString("currentBid"));
+					int minPrice = Integer.parseInt(result.getString("minPrice"));
+					
+					
+					
+					
+					/* CHOOSING A WINNER: */
+					
+					if(currentBid < minPrice){
+						
+						String queryUpdate2 = "UPDATE auctionItem SET buyerId=NULL, currentBid=0 WHERE itemId=(?)";
+						
+						PreparedStatement psUpdate2 = c.prepareStatement(queryUpdate2);
+						
+						psUpdate2.setString(1, result.getString("itemId"));
+						
+						psUpdate2.executeUpdate();
+						
+					}
+					
+				}
+
+			}while(result.next());
+		}
+		
+		
+		
+		
+		
+		/* ALERTING THE USER IF (S)HE WON: */
+		
+		String queryWinner = "SELECT * FROM auctionItem WHERE buyerId=(?) AND isClosed=(?)";
+		
+		PreparedStatement psWinner = c.prepareStatement(queryWinner);
+		psWinner.setString(1, userId);
+		psWinner.setString(2, "Y");
+		
+		ResultSet resultWinner = psWinner.executeQuery();
+		
+		if (resultWinner.next()) {
+			
+			%> <h2> Congratulations! You've won the following auction(s): </h2> <%
+			
+			ResultSetMetaData rsmd = resultWinner.getMetaData();
+			int columnsNumber = rsmd.getColumnCount();
+			
+			do {
+				%> <h5> Auction Item: </h5> <%
+			    String auctionItem = "";
+				for (int i = 1; i <= columnsNumber; i++) {
+					if(!rsmd.getColumnLabel(i).equals("minPrice")){
+						auctionItem += rsmd.getColumnLabel(i) +": "+ resultWinner.getString(i) + "    ";	
+					}
+			    }
+				%> <pre> <%= auctionItem %>		 </pre>
+		        <%
+			} while (resultWinner.next());
+		}
+	    
+	} catch (Exception e) {
+		System.out.println(e);
+		%>
+		<pre> Error fetching auction closing data. Please reload the page. </pre>
+		<%
+	}
+%>
+
+
+
+
+
+
+
+
 	<!-- UPPER LIMIT REACHED ALERT: -->
 	
 <%
@@ -34,12 +158,19 @@
 		
 		if (result.next()) {
 			
+			String resultItemId = ""; 
+			
 			int printFlag = 0;
 			do {
 				
+				if(resultItemId.equals(result.getString("itemId"))){
+					continue;
+				}else{
+					resultItemId = result.getString("itemId");
+				}
+				
 				if (result.getString("isLimitCrossed").equals("Y")) {
 					
-					System.out.println(result.getString("itemId"));
 					if(printFlag == 0){
 						printFlag = 1;
 						%><h2>Auto-Bid Limit Crossed Alert!</h2>
@@ -64,7 +195,9 @@
 				
 						String auctionItem = "";
 						for (int i = 1; i <= columnsNumber; i++) {
-							auctionItem += rsmd.getColumnLabel(i) +": "+ resultCheck.getString(i) + "    ";
+							if(!rsmd.getColumnLabel(i).equals("minPrice")){
+								auctionItem += rsmd.getColumnLabel(i) +": "+ resultCheck.getString(i) + "    ";	
+							}
 					    }
 						%> <pre> <%= auctionItem %>		 </pre>
 				        <%
@@ -222,6 +355,7 @@
 
 
 
+
 	<!-- PUBLISH AN ITEM: -->
 	
 	<h2> Publish an item: </h2>
@@ -283,6 +417,37 @@
 			<% } %>
 		</table>
 	</form>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- QUESTION SEARCH: -->
+	
+	<h2> Search your question: </h2>
+	
+	<form action="questionSearch.jsp" method="post">
+		<table>
+
+			<tr><td>Keyword:</td><td><input type=text name=keyword></td></tr>
+
+			<tr><td><input type=Submit value=Submit></td></tr>
+			
+			<% if (request.getParameter("questionSearchResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("questionSearchResponse")%></p></td>
+				</tr>
+			<% } %>
+		</table>
+	</form>
+	
+	
+	
+	
 	
 	
 	

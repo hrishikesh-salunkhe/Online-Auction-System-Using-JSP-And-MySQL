@@ -50,10 +50,9 @@ select * from question;
 
 create table auctionItem(itemId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(40),
 						subcategory VARCHAR(40), length INT, breadth INT, colorType VARCHAR(20), 
-                        description VARCHAR(100), artist VARCHAR(50),
-                        initialPrice FLOAT, minPrice FLOAT, closingDateTime VARCHAR(50),
-						incrementAmount FLOAT, currentBid FLOAT, sellerId VARCHAR(10) NOT NULL, buyerId VARCHAR(10),
-						FOREIGN KEY (sellerId) REFERENCES user(userId) ON DELETE CASCADE);
+                        description VARCHAR(100), artist VARCHAR(50), initialPrice FLOAT, minPrice FLOAT,
+                        closingDateTime VARCHAR(50), incrementAmount FLOAT, currentBid FLOAT, sellerId VARCHAR(10) NOT NULL,
+                        buyerId VARCHAR(10), isClosed CHAR(1), FOREIGN KEY (sellerId) REFERENCES user(userId) ON DELETE CASCADE);
                         
 select * from auctionItem;
 
@@ -64,8 +63,6 @@ create table autoBid(autoBidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId V
 					FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE CASCADE);
 
 select * from autoBid;
-
--- update autoBid set isLimitCrossed='Y' where autoBidId=1;
 
 -- BID:
 create table bid(bidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId VARCHAR(10), dateTime VARCHAR(50),

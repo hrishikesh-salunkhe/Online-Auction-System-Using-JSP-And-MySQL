@@ -16,10 +16,14 @@
 		
 		String userId = session.getAttribute("userId").toString();
 		
-		String query = "SELECT * FROM auctionItem WHERE sellerId <> (?)";
+		String keyword = "%" + request.getParameter("keyword") + "%";
+		System.out.println(keyword);
+		String query = "SELECT * FROM question WHERE userId=(?) AND questionDetails LIKE (?)";
 		
 		PreparedStatement ps = c.prepareStatement(query);
+		
 		ps.setString(1, userId);
+		ps.setString(2, keyword);
 		
 		ResultSet result = ps.executeQuery();
 		
@@ -27,7 +31,7 @@
 			ResultSetMetaData rsmd = result.getMetaData();
 			int columnsNumber = rsmd.getColumnCount();
 			while (result.next()) {
-				%> <h5> Auction Item: </h5> <%
+				%> <h4> Question: </h4> <%
 			    String auctionItem = "";
 				for (int i = 1; i <= columnsNumber; i++) {
 					if(!rsmd.getColumnLabel(i).equals("minPrice")){
@@ -43,53 +47,16 @@
 		System.out.println(e);
 		%>
 		<jsp:forward page="main.jsp">
-		<jsp:param name="auctionResponse" value="Error searching auction items. Please try again."/> 
+		<jsp:param name="questionSearchResponse" value="Error searching questions. Please try again."/> 
 		</jsp:forward>
 		<%
 	}
 %>
 
-
-
-
-
-
-
-
-	<!-- PLACE A BID: -->
-	
-	<h2>Place a bid on an auction item:</h2>
-
-	<form action="auctionBidStatus.jsp" method="post">
-
-		<table>
-			
-			<tr><td>Enter itemId:</td><td><input required type=number name=itemId></td></tr>
-			<tr><td>Enter bid value:</td><td><input required type=number name=bidAmount></td></tr>
-			<tr><td>Enable Auto-Bidding?:</td>
-			<td>
-				<select required name="autoBid">
-				  <option value="yes">Yes</option>
-				  <option selected value="no">No</option>
-				</select>
-			</td></tr>
-			<tr><td>Auto-Bid Upper Limit:</td><td><input required type=number value=0 name=upperLimit></td></tr>
-			
-			
-			<tr><td><input type=Submit value="Place Bid"></td></tr>
-			
-			<% if (request.getParameter("bidResponse") != null) { %>
-				<tr>
-					<td><p><%=request.getParameter("bidResponse")%></p></td>
-				</tr>
-			<% } %>
-		
-		</table>
-	
-	</form>
 	
 	
 	
+
 
 <!-- HOME PAGE: -->
 	
@@ -97,12 +64,12 @@
 	
 	
 	
-	
+	<br/>
+	<br/>
 	
 <!-- LOGOUT: -->
 	
 	<a href="logout.jsp">Logout</a>
-	
 	
 </body>
 </html>
