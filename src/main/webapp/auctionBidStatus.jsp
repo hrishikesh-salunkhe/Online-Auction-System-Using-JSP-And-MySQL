@@ -222,10 +222,10 @@
 							}
 							
 							currentBid += incrementAmount;
-							resultAutoBid = psAutoBid.executeQuery();
-							continue rec;
+				
 						}
-						
+						resultAutoBid = psAutoBid.executeQuery();
+						continue rec;
 					}
 					
 					break rec;
