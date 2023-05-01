@@ -144,7 +144,6 @@
 				currentBid = bidAmount;
 				
 			
-				
 				int numRows = 0;
 				int multiFlag = 0;
 				
@@ -319,6 +318,8 @@
 						resultAutoBid = psAutoBid.executeQuery();
 						continue rec;
 					}
+					
+					System.out.println("Breaking infinite while loop");
 					
 					break rec;
 					

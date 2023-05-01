@@ -1,5 +1,3 @@
-show databases;
-
 create database auction;
 
 use auction;
@@ -56,7 +54,7 @@ create table auctionItem(itemId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VA
                         
 select * from auctionItem;
 
--- update auctionItem set isClosed='N', currentBid=0 where itemId=3;
+-- update auctionItem set isClosed='N', currentBid=0 where itemId in (2,3,4);
 
 -- update auctionItem set closingDateTime='30-04-2023 24:00:00' where itemId=3;
 

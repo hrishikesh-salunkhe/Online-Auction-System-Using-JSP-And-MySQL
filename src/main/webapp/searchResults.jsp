@@ -25,10 +25,17 @@
 		String initialPriceFrom = request.getParameter("initialPriceFrom");
 		String initialPriceTo = request.getParameter("initialPriceTo");
 		
-		String query = "SELECT * FROM auctionItem WHERE subcategory=(?) AND (?) <= length <= (?)"
-						+ " AND (?) <= breadth <= (?) AND colorType=(?) AND (?) <= initialPrice <= (?)"
-						+ " AND sellerId <> (?) ORDER BY "
-						+ request.getParameter("orderBy") + " " + request.getParameter("ascDesc");
+		String query="";
+		if(request.getParameter("orderBy") != null && request.getParameter("ascDesc") != null){
+			query = "SELECT * FROM auctionItem WHERE subcategory=(?) AND (?) <= length <= (?)"
+					+ " AND (?) <= breadth <= (?) AND colorType=(?) AND (?) <= initialPrice <= (?)"
+					+ " AND sellerId <> (?) ORDER BY "
+					+ request.getParameter("orderBy") + " " + request.getParameter("ascDesc");	
+		}else{
+			query = "SELECT * FROM auctionItem WHERE subcategory=(?) AND (?) <= length <= (?)"
+					+ " AND (?) <= breadth <= (?) AND colorType=(?) AND (?) <= initialPrice <= (?)"
+					+ " AND sellerId <> (?)";
+		}
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		
