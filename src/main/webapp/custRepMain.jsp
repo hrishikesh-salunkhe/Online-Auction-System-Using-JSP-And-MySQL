@@ -10,26 +10,26 @@
 </head>
 <body>
 	<h1> Welcome to the Customer Representative Panel! </h1>
+
 	
 	
 	
 	
 	
-	<!-- CHANGE USER PASSWORD -->
 	
-	<h2>Change a user's password:</h2>
+	<!-- VIEW, MODIFY AND DELETE USER ACCOUNTS -->
 	
-	<form action="modifyStatus.jsp" method="post">
+	<h2>View, Modify and Delete User Accounts:</h2>
+	
+	<form action="viewModifyDelete.jsp" method="post">
 
 		<table>
 			
-			<tr><td>Enter userId:</td><td><input type=text maxlength=10 name=userId></td></tr>
-			<tr><td>Enter new Password:</td><td><input type=password maxlength=20 name=password></td></tr>
-			<tr><td><input type=Submit value=Modify></td></tr>
+			<tr><td><input type=Submit value=View></td></tr>
 			
-			<% if (request.getParameter("modifyResponse") != null) { %>
+			<% if (request.getParameter("viewModifyDeleteResponse") != null) { %>
 				<tr>
-					<td><p><%=request.getParameter("modifyResponse")%></p></td>
+					<td><p><%=request.getParameter("viewModifyDeleteResponse")%></p></td>
 				</tr>
 			<% } %>
 		
@@ -42,51 +42,22 @@
 	
 	
 	
+	
+	
+	
 	<!-- ANSWER USER QUESTION -->
 	
-	<h2>Answer a user's question:</h2>
+	<h2>View and Answer user questions:</h2>
 	
-<%
-	try {
-		ApplicationDB db = new ApplicationDB();	
-		Connection c = db.getConnection();
-		
-		String query = "SELECT * FROM question WHERE solutionDetails IS NULL";
-		
-		PreparedStatement ps = c.prepareStatement(query);
-		ResultSet result = ps.executeQuery();
-		
-		if (result != null) {
-			ResultSetMetaData rsmd = result.getMetaData();
-			int columnsNumber = rsmd.getColumnCount();
-			while (result.next()) {
-				%> <h5> Question: </h5> <%
-			    String question = "";
-				for (int i = 1; i <= columnsNumber; i++) {
-			        question += rsmd.getColumnLabel(i) + ": " + result.getString(i) + "    ";
-			    }
-				%> <pre> <%= question %>		 </pre>
-		        <%
-			}
-		}
-	} catch (Exception e) {
-		System.out.println(e);
-		%>
-		<pre> Error fetching questions. Please reload the page. </pre>
-		<%
-	}
-%>
-	<form action="solutionStatus.jsp" method="post">
+	<form action="questions.jsp" method="post">
 
 		<table>
 			
-			<tr><td>Enter questionId:</td><td><input type=number name=questionId></td></tr>
-			<tr><td>Enter the answer:</td><td><input type=text maxlength=100 name=solutionDetails></td></tr>
 			<tr><td><input type=Submit value=Submit></td></tr>
 			
-			<% if (request.getParameter("solutionResponse") != null) { %>
+			<% if (request.getParameter("questionResponse") != null) { %>
 				<tr>
-					<td><p><%=request.getParameter("solutionResponse")%></p></td>
+					<td><p><%=request.getParameter("questionResponse")%></p></td>
 				</tr>
 			<% } %>
 		
@@ -103,46 +74,13 @@
 	
 	<!-- DELIST AN AUCTION ITEM -->
 	
-	<h2>Delist an Auction Item:</h2>
+	<h2>View and Delist Auction Items:</h2>
 	
-<%
-	try {
-		ApplicationDB db = new ApplicationDB();	
-		Connection c = db.getConnection();
-		
-		String query = "SELECT * FROM auctionItem";
-		
-		PreparedStatement ps = c.prepareStatement(query);
-		ResultSet result = ps.executeQuery();
-		
-		if (result != null) {
-			ResultSetMetaData rsmd = result.getMetaData();
-			int columnsNumber = rsmd.getColumnCount();
-			while (result.next()) {
-				%> <h5> Auction Item: </h5> <%
-				String auctionItem = "";
-				for (int i = 1; i <= columnsNumber; i++) {
-					if(!rsmd.getColumnLabel(i).equals("minPrice")){
-						auctionItem += rsmd.getColumnLabel(i) +": "+ result.getString(i) + "    ";	
-					}
-			    }
-				%> <pre> <%= auctionItem %>		 </pre>
-		        <%
-			}
-		}
-	} catch (Exception e) {
-		System.out.println(e);
-		%>
-		<pre> Error fetching auction items. Please reload the page. </pre>
-		<%
-	}
-%>
-	<form action="delistStatus.jsp" method="post">
+	<form action="delist.jsp" method="post">
 
 		<table>
 			
-			<tr><td>Enter itemId:</td><td><input type=number name=itemId></td></tr>
-			<tr><td><input type=Submit value=Delist></td></tr>
+			<tr><td><input type=Submit value=View></td></tr>
 			
 			<% if (request.getParameter("delistResponse") != null) { %>
 				<tr>
@@ -163,54 +101,25 @@
 	
 	<!-- REMOVE A BID -->
 	
-	<h2>Remove a Bid:</h2>
+	<h2>View and Remove Bids:</h2>
 	
-<%
-	try {
-		ApplicationDB db = new ApplicationDB();	
-		Connection c = db.getConnection();
-		
-		String query = "SELECT * FROM bid";
-		
-		PreparedStatement ps = c.prepareStatement(query);
-		ResultSet result = ps.executeQuery();
-		
-		if (result != null) {
-			ResultSetMetaData rsmd = result.getMetaData();
-			int columnsNumber = rsmd.getColumnCount();
-			while (result.next()) {
-				%> <h5> Bid: </h5> <%
-			    String auctionItem = "";
-				for (int i = 1; i <= columnsNumber; i++) {
-					auctionItem += rsmd.getColumnLabel(i) + ": " + result.getString(i) + "    ";
-			    }
-				%> <pre> <%= auctionItem %>		 </pre>
-		        <%
-			}
-		}
-	} catch (Exception e) {
-		System.out.println(e);
-		%>
-		<pre> Error fetching bids. Please reload the page. </pre>
-		<%
-	}
-%>
-	<form action="removeBidStatus.jsp" method="post">
+	<form action="removeBid.jsp" method="post">
 
 		<table>
 			
-			<tr><td>Enter bid ID:</td><td><input type=number name=bidId></td></tr>
-			<tr><td><input type=Submit value=Remove></td></tr>
+			<tr><td><input type=Submit value=View></td></tr>
 			
-			<% if (request.getParameter("removeBidResponse") != null) { %>
+			<% if (request.getParameter("removeResponse") != null) { %>
 				<tr>
-					<td><p><%=request.getParameter("removeBidResponse")%></p></td>
+					<td><p><%=request.getParameter("removeResponse")%></p></td>
 				</tr>
 			<% } %>
 		
 		</table>
 	
 	</form>
+	
+	<br/><br/>
 		
 	<a href="custRepLogout.jsp">Logout</a>
 </body>

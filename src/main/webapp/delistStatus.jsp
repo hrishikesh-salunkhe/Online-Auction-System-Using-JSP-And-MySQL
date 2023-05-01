@@ -32,16 +32,16 @@
 			ps.executeUpdate();
 			
 			%>
-			<jsp:forward page="custRepMain.jsp">
-			<jsp:param name="delistResponse" value="Item delisted successfully!"/> 
+			<jsp:forward page="delist.jsp">
+			<jsp:param name="itemDelistResponse" value="Item delisted successfully!"/> 
 			</jsp:forward>
 			<% //ABOVE: FORWARD TO HOME PAGE WITH CURRENT USERNAME ATTACHED
 			
 		}else{
 			
 			%>
-			<jsp:forward page="custRepMain.jsp">
-			<jsp:param name="delistResponse" value="Item ID not found. Please try again."/> 
+			<jsp:forward page="delist.jsp">
+			<jsp:param name="itemDelistResponse" value="Item ID not found. Please try again."/> 
 			</jsp:forward>
 			<%
 			
@@ -49,8 +49,8 @@
 	} catch (Exception e) {
 		System.out.println(e);
 		%>
-		<jsp:forward page="custRepMain.jsp">
-		<jsp:param name="delistResponse" value="Error delisting auction item. Please try again."/> 
+		<jsp:forward page="delist.jsp">
+		<jsp:param name="itemDelistResponse" value="Error delisting auction item. Please try again."/> 
 		</jsp:forward>
 		<%
 	}

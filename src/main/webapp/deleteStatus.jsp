@@ -6,40 +6,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Confirm Delete</title>
 </head>
 <body>
-<%
-	try {
-		ApplicationDB db = new ApplicationDB();	
-		Connection c = db.getConnection();
-		
-		String userId = session.getAttribute("userId").toString();
-		
-		session.invalidate();
-		
-		String query = "DELETE FROM user WHERE userId=(?)";
-		
-		PreparedStatement ps = c.prepareStatement(query);
-		ps.setString(1, userId);
-		
-		ps.executeUpdate();
-		
-		%>
-		<jsp:forward page="login.jsp">
-		<jsp:param name="deleteResponse" value="Account deleted successfully."/> 
-		</jsp:forward>
-		<%
-		
-	} catch (Exception e) {
-		
-		%>
-		<jsp:forward page="login.jsp">
-		<jsp:param name="deleteResponse" value="Error deleting account. Please try again."/> 
-		</jsp:forward>
-		<%
-		
-	}
-%>
+
+<h2>You sure you want to delete your account?: </h2>
+
+<a href="confirmDelete.jsp"> YES </a>
+
+<br/>
+<br/>
+
+<a href="main.jsp"> NO </a>
+
+<% if (request.getParameter("deleteResponse") != null) { %>
+	<p><%=request.getParameter("deleteResponse")%></p>
+<% } %>
+
 </body>
 </html>

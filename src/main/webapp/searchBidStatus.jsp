@@ -145,10 +145,6 @@
 				psAutoBid.setString(2, "N");
 				ResultSet resultAutoBid = psAutoBid.executeQuery();
 				
-				resultAutoBid.last();
-				int numRows = resultAutoBid.getRow();
-				resultAutoBid.beforeFirst();
-				
 				currentBid = bidAmount + incrementAmount;
 				
 				
@@ -159,6 +155,13 @@
 				/* LABEL FOR RECURSION */
 				rec: while(true){
 				
+					
+					resultAutoBid.last();
+					int numRows = resultAutoBid.getRow();
+					System.out.println("Num rows: "+numRows);
+					resultAutoBid.beforeFirst();
+					
+					
 					/* IF ONLY ONE AUTO-BID EXISTS: */
 					
 					if(numRows == 1){
@@ -230,8 +233,10 @@
 							currentBid += incrementAmount;
 							
 						}
+						
 						resultAutoBid = psAutoBid.executeQuery();
 						continue rec;
+						
 					}
 					
 					break rec;

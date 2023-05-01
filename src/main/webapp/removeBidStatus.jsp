@@ -32,7 +32,7 @@
 			ps.executeUpdate();
 			
 			%>
-			<jsp:forward page="custRepMain.jsp">
+			<jsp:forward page="removeBid.jsp">
 			<jsp:param name="removeBidResponse" value="Bid removed successfully!"/> 
 			</jsp:forward>
 			<% //ABOVE: FORWARD TO HOME PAGE WITH CURRENT USERNAME ATTACHED
@@ -40,7 +40,7 @@
 		}else{
 			
 			%>
-			<jsp:forward page="custRepMain.jsp">
+			<jsp:forward page="removeBid.jsp">
 			<jsp:param name="removeBidResponse" value="Bid ID not found. Please try again."/> 
 			</jsp:forward>
 			<%
@@ -49,7 +49,7 @@
 	} catch (Exception e) {
 		System.out.println(e);
 		%>
-		<jsp:forward page="custRepMain.jsp">
+		<jsp:forward page="removeBid.jsp">
 		<jsp:param name="removeBidResponse" value="Error removing bid. Please try again."/> 
 		</jsp:forward>
 		<%

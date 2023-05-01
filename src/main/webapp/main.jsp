@@ -31,11 +31,10 @@
 		
 		/* ENTER DATE HERE FOR TESTING */
 		
-		String dateToday="30-04-2023 21:30:00";  
+		String dateToday="30-04-2023 11:30:00";  
 		
 	    Date date=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(dateToday);
 	     
-	    
 	    /* FETCHING OPEN AUCTION DATA: */
 	    
 		String query = "SELECT * FROM auctionItem WHERE isClosed=(?)";
@@ -50,9 +49,11 @@
 			do{
 				
 				String auctionDate = result.getString("closingDateTime");
+				auctionDate += " PM";
 				
 				Date aucDate = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(auctionDate);
-			    
+			    System.out.println("aucDate: "+aucDate);
+			    System.out.println(aucDate.before(date));
 				
 				
 				/* CLOSING THE AUCTION: */

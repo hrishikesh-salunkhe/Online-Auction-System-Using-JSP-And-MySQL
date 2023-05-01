@@ -47,14 +47,14 @@
 			insert_ps.executeUpdate();
 			
 			%>
-			<jsp:forward page="custRepMain.jsp">
+			<jsp:forward page="viewModifyDelete.jsp">
 			<jsp:param name="modifyResponse" value="Update Successful!"/> 
 			</jsp:forward>
 			<%
 			
 		} else {
 			%>
-			<jsp:forward page="custRepMain.jsp">
+			<jsp:forward page="viewModifyDelete.jsp">
 			<jsp:param name="modifyResponse" value="User ID not found."/> 
 			</jsp:forward>
 			<%
@@ -63,7 +63,7 @@
 	} catch (Exception e) {
 		System.out.println(e);
 		%>
-		<jsp:forward page="custRepMain.jsp">
+		<jsp:forward page="viewModifyDelete.jsp">
 		<jsp:param name="modifyResponse" value="Error modifying. Please try again."/> 
 		</jsp:forward>
 		<%

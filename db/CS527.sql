@@ -56,6 +56,10 @@ create table auctionItem(itemId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VA
                         
 select * from auctionItem;
 
+-- update auctionItem set isClosed='N', currentBid=0 where itemId=3;
+
+-- update auctionItem set closingDateTime='30-04-2023 24:00:00' where itemId=3;
+
 -- AUTO BID:
 create table autoBid(autoBidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId VARCHAR(10), bidLimit FLOAT,
 					itemId INT NOT NULL, isLimitCrossed CHAR(1),
@@ -64,12 +68,21 @@ create table autoBid(autoBidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId V
 
 select * from autoBid;
 
+-- insert into autoBid values(1, 'rasika', 200, 3, 'N');
+-- insert into autoBid values(2, 'aditya', 250, 3, 'N');
+
+-- delete from autoBid where itemId=3;
+
+-- update autoBid set isLimitCrossed='N' where userId='rasika';
+
 -- BID:
 create table bid(bidId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId VARCHAR(10), dateTime VARCHAR(50),
 				amount FLOAT, itemId INT NOT NULL, FOREIGN KEY (itemId) REFERENCES auctionItem(itemId), 
 				FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE CASCADE);
 
 select * from bid; 
+
+-- delete from bid where itemId=3;
 
 -- LISTING ALERTS:
 create table listingAlerts(alertId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, userId VARCHAR(10),
