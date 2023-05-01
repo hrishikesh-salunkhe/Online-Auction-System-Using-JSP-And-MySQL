@@ -25,7 +25,8 @@
 		
 		ResultSet result = ps.executeQuery();
 		
-		if(result.next()){
+		result.next();
+		if(result.getString("totalEarnings") != null){
 
 			String totalEarnings = result.getString("totalEarnings");
 			
