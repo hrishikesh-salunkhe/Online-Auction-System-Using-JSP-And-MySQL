@@ -143,9 +143,9 @@
 		
 		
 		/* BEST-SELLING USERS: */
-		String query6 = "SELECT * FROM auctionItem WHERE isClosed='Y' ORDER BY currentBid DESC";
+		String query6 = "SELECT sellerId, SUM(currentBid) as earnings FROM auctionItem WHERE isClosed='Y' GROUP BY sellerId ORDER BY earnings DESC";
 		
-		PreparedStatement ps6 = c.prepareStatement(query5);
+		PreparedStatement ps6 = c.prepareStatement(query6);
 		
 		ResultSet result6 = ps6.executeQuery();
 		
@@ -159,13 +159,44 @@
 				
 				String auctionItem = "Rank: " + rankNew + "    "
 									+ "User ID: " + result6.getString("sellerId") + "    "
-									+ "Earnings: " + result6.getString("currentBid") + "    ";
+									+ "Earnings: " + result6.getString("earnings") + "    ";
 				
 				rankNew++;
 			    
 				%> <pre> <%= auctionItem %>		 </pre>
 		        <%
 			} while (result6.next());
+		}
+		
+		
+		
+		
+		
+		
+		/* BEST-BUYERS: */
+		String query7 = "SELECT buyerId, SUM(currentBid) as earnings FROM auctionItem WHERE isClosed='Y' GROUP BY buyerId ORDER BY earnings DESC";
+		
+		PreparedStatement ps7 = c.prepareStatement(query6);
+		
+		ResultSet result7 = ps7.executeQuery();
+		
+		int rankBuyers = 1;
+		
+		if (result7.next()) {
+			
+			%> <h4> Best-Buying Users: </h4> <%
+			
+			do {
+				
+				String auctionItem = "Rank: " + rankBuyers + "    "
+									+ "User ID: " + result7.getString("buyerId") + "    "
+									+ "Earnings: " + result7.getString("earnings") + "    ";
+				
+				rankBuyers++;
+			    
+				%> <pre> <%= auctionItem %>		 </pre>
+		        <%
+			} while (result7.next());
 		}
 		
 	} catch (Exception e) {

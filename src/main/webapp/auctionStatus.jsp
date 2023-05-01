@@ -14,13 +14,6 @@
 		ApplicationDB db = new ApplicationDB();	
 		Connection c = db.getConnection();
 		
-/* 		itemId INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(40),
-		subcategory VARCHAR(40), length INT, breadth INT, colorType VARCHAR(20), 
-        paintingStyle VARCHAR(20), description VARCHAR(100), artist VARCHAR(50),
-        initialPrice FLOAT, minPrice FLOAT, closingDateTime VARCHAR(50),
-		incrementAmount FLOAT, currentBid FLOAT, sellerId VARCHAR(10) NOT NULL, buyerId VARCHAR(10),
-		FOREIGN KEY (sellerId) REFERENCES user(userId) */
-		
 		String name = request.getParameter("name");
 		String subcategory = request.getParameter("subcategory");
 		String length = request.getParameter("length");
@@ -35,8 +28,8 @@
 		String sellerId = session.getAttribute("userId").toString();
 		
 		String query = "INSERT INTO auctionItem(name, subcategory, length, breadth, colorType, "
-					+ "description, artist, initialPrice, closingDateTime, incrementAmount, minPrice, sellerId) "
-					+ "VALUES((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+					+ "description, artist, initialPrice, closingDateTime, incrementAmount, minPrice, sellerId, isClosed) "
+					+ "VALUES((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		ps.setString(1, name);
@@ -51,6 +44,7 @@
 		ps.setString(10, incrementAmount);
 		ps.setString(11, minPrice);
 		ps.setString(12, sellerId);
+		ps.setString(13, "N");
 		
 		ps.executeUpdate();
 		

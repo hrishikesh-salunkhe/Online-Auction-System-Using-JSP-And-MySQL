@@ -31,7 +31,7 @@
 		
 		/* ENTER DATE HERE FOR TESTING */
 		
-		String dateToday="30-04-2023 11:30:00";  
+		String dateToday="30-05-2023 11:30:00";  
 		
 	    Date date=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(dateToday);
 	     
@@ -68,7 +68,10 @@
 					
 					psUpdate.executeUpdate();
 					
-					int currentBid = Integer.parseInt(result.getString("currentBid"));
+					int currentBid = 0;
+					if(result.getString("currentBid") != null){
+						currentBid = Integer.parseInt(result.getString("currentBid"));
+					}
 					int minPrice = Integer.parseInt(result.getString("minPrice"));
 					
 					
