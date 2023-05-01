@@ -176,7 +176,7 @@
 		/* BEST-BUYERS: */
 		String query7 = "SELECT buyerId, SUM(currentBid) as earnings FROM auctionItem WHERE isClosed='Y' GROUP BY buyerId ORDER BY earnings DESC";
 		
-		PreparedStatement ps7 = c.prepareStatement(query6);
+		PreparedStatement ps7 = c.prepareStatement(query7);
 		
 		ResultSet result7 = ps7.executeQuery();
 		
