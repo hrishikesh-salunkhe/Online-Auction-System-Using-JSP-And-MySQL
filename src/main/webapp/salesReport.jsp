@@ -25,11 +25,13 @@
 		
 		ResultSet result = ps.executeQuery();
 		
-		result.next();
-		
-		String totalEarnings = result.getString("totalEarnings");
-		
-		%> <h4> Total Earnings: <%= totalEarnings %></h4> <%
+		if(result.next()){
+
+			String totalEarnings = result.getString("totalEarnings");
+			
+			%> <h4> Total Earnings: <%= totalEarnings %></h4> <%
+				
+		}
 		
 				
 				
