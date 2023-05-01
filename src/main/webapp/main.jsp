@@ -31,7 +31,7 @@
 		
 		/* ENTER DATE HERE FOR TESTING */
 		
-		String dateToday="30-05-2023 11:30:00";  
+		String dateToday="30-04-2023 11:30:00";  
 		
 	    Date date=new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(dateToday);
 	     
@@ -409,6 +409,7 @@
 			<tr><td>Minimum Acceptable Price:</td><td><input type=number name=minPrice></td></tr>
 			
 			<tr><td>Auction Closing Date and Time:</td><td><input type=text maxlength=50 name=closingDateTime></td></tr>
+			<tr><td>(format: dd-mm-yyyy hh24:mm:ss) </td></tr>
 			
 			<tr><td>Bid Increment Amount:</td><td><input type=number name=incrementAmount></td></tr>
 			
@@ -680,6 +681,32 @@
 			
 		</table>
 	</form>
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- CHECK FOR HIGHER BID: -->
+	
+	<h2> Check if someone has placed a higher bid than you: </h2>
+	
+	<form action="checkBid.jsp" method="post">
+		<table>
+			
+			<tr><td><input type=Submit value=Search></td></tr>
+			
+			<% if (request.getParameter("checkBidResponse") != null) { %>
+				<tr>
+					<td><p><%=request.getParameter("checkBidResponse")%></p></td>
+				</tr>
+			<% } %>
+			
+		</table>
+	</form>
+	
 	
 	
 	
