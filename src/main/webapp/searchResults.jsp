@@ -27,7 +27,8 @@
 		
 		String query = "SELECT * FROM auctionItem WHERE subcategory=(?) AND (?) <= length <= (?)"
 						+ " AND (?) <= breadth <= (?) AND colorType=(?) AND (?) <= initialPrice <= (?)"
-						+ " AND sellerId <> (?)";
+						+ " AND sellerId <> (?) ORDER BY "
+						+ request.getParameter("orderBy") + " " + request.getParameter("ascDesc");
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		

@@ -542,14 +542,38 @@
 	
 	
 	
-	
-	
+		
 	<!-- SEE ALL AUCTION ITEMS: -->
 	
 	<h2>See all Auction Items and Place a Bid:</h2>
 	
 	<form action="auctionResults.jsp" method="post">
 		<table>
+			
+			<tr><td>Sort By:</td>
+			<td>
+				<select required name="orderBy">
+				  <option value="itemId">Item ID</option>
+				  <option value="name">Item Name</option>
+				  <option value="subcategory">Item Subcategory</option>
+				  <option value="length">Length</option>
+				  <option value="breadth">Breadth</option>
+				  <option value="colorType">Color Type</option>
+				  <option value="artist">Artist</option>
+				  <option value="initialPrice">Starting Price</option>
+				  <option value="closingDateTime">Closing Date and Time</option>
+				  <option value="currentBid">Current Bid</option>
+				  <option value="sellerId">Seller User ID</option>
+				</select>
+			</td>
+			
+			<td>
+				<select required name="ascDesc">
+				  <option value="ASC">Lower to Higher</option>
+				  <option value="DESC">Higher to Lower</option>
+				</select>
+			</td></tr>
+		
 			<tr><td><input type=Submit value=View></td></tr>
 			
 			<% if (request.getParameter("auctionResponse") != null) { %>
@@ -618,6 +642,30 @@
 				<td>Starting Price Range:</td><td><input required type=number name=initialPriceFrom></td>
 				<td> to: </td><td><input required type=number name=initialPriceTo></td>
 			</tr>
+			
+			<tr><td>Sort By:</td>
+			<td>
+				<select required name="orderBy">
+				  <option value="itemId">Item ID</option>
+				  <option value="name">Item Name</option>
+				  <option value="subcategory">Item Subcategory</option>
+				  <option value="length">Length</option>
+				  <option value="breadth">Breadth</option>
+				  <option value="colorType">Color Type</option>
+				  <option value="artist">Artist</option>
+				  <option value="initialPrice">Starting Price</option>
+				  <option value="closingDateTime">Closing Date and Time</option>
+				  <option value="currentBid">Current Bid</option>
+				  <option value="sellerId">Seller User ID</option>
+				</select>
+			</td>
+			
+			<td>
+				<select required name="ascDesc">
+				  <option value="ASC">Lower to Higher</option>
+				  <option value="DESC">Higher to Lower</option>
+				</select>
+			</td></tr>
 			
 			<tr><td><input type=Submit value=Search></td></tr>
 			

@@ -16,7 +16,8 @@
 		
 		String userId = session.getAttribute("userId").toString();
 		
-		String query = "SELECT * FROM auctionItem WHERE sellerId <> (?)";
+		String query ="SELECT * FROM auctionItem WHERE sellerId <> (?) ORDER BY "
+					+ request.getParameter("orderBy") + " " + request.getParameter("ascDesc");
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		ps.setString(1, userId);
