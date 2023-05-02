@@ -153,6 +153,17 @@
 					
 					System.out.println("Inside the infinite while loop");
 					
+					String selectQuery = "SELECT * FROM auctionItem WHERE itemId=(?)";
+					
+					PreparedStatement selectPs = c.prepareStatement(selectQuery);
+					selectPs.setString(1, itemId);
+					
+					ResultSet selectResult = selectPs.executeQuery();
+					selectResult.next();
+					
+					String currentBuyer = selectResult.getString("buyerId");
+					String bidPlacer = "";
+					
 					resultAutoBid.last();
 					numRows = resultAutoBid.getRow();
 					System.out.println("Num rows: "+numRows);
@@ -166,47 +177,57 @@
 						System.out.println("Inside numRows == 1");
 						
 						resultAutoBid.next();
-						if(Integer.parseInt(resultAutoBid.getString("bidLimit")) >= currentBid + incrementAmount){
+						
+						bidPlacer = resultAutoBid.getString("userId");
+
+						System.out.println("currentBuyer: " +currentBuyer);
+						System.out.println("bidPlacer: " +bidPlacer);
+						
+						if(!currentBuyer.equals(bidPlacer)){
 							
-							System.out.println("Placing bid inside numRows == 1");
-							
-							/* UPDATE AUCTION ITEM TABLE: */
-							
-							String queryUpdate1 = "UPDATE auctionItem SET currentBid=(?), buyerId=(?) WHERE itemId=(?)";
-							
-							PreparedStatement psUpdate1 = c.prepareStatement(queryUpdate1);
-							psUpdate1.setInt(1, currentBid + incrementAmount);
-							psUpdate1.setString(2, resultAutoBid.getString("userId"));
-							psUpdate1.setString(3, itemId);
-							
-							psUpdate1.executeUpdate();
-							
-							currentBid += incrementAmount;
-							
-							String queryInsertBid = "INSERT INTO bid(userId, dateTime, amount, itemId)"
-									+ " VALUES((?), (?), (?), (?))";
-					
-							PreparedStatement psInsertBid = c.prepareStatement(queryInsertBid);
-							psInsertBid.setString(1, resultAutoBid.getString("userId"));
-							
-							psInsertBid.setString(2, formattedDate);
-							psInsertBid.setInt(3, currentBid);
-							psInsertBid.setString(4, itemId);
-							psInsertBid.executeUpdate();
-							
-						}else{
-							
-							System.out.println("Updating limitCrossed inside numRows == 1");
-							
-							String queryUpdate = "UPDATE autoBid SET isLimitCrossed=(?) WHERE autoBidId=(?)";
-							
-							PreparedStatement psUpdate = c.prepareStatement(queryUpdate);
-							psUpdate.setString(1, "Y");
-							psUpdate.setString(2, resultAutoBid.getString("autoBidId"));
-							
-							psUpdate.executeUpdate();
-							
+							if(Integer.parseInt(resultAutoBid.getString("bidLimit")) >= currentBid + incrementAmount){
+								
+								System.out.println("Placing bid inside numRows == 1");
+								
+								/* UPDATE AUCTION ITEM TABLE: */
+								
+								String queryUpdate1 = "UPDATE auctionItem SET currentBid=(?), buyerId=(?) WHERE itemId=(?)";
+								
+								PreparedStatement psUpdate1 = c.prepareStatement(queryUpdate1);
+								psUpdate1.setInt(1, currentBid + incrementAmount);
+								psUpdate1.setString(2, resultAutoBid.getString("userId"));
+								psUpdate1.setString(3, itemId);
+								
+								psUpdate1.executeUpdate();
+								
+								currentBid += incrementAmount;
+								
+								String queryInsertBid = "INSERT INTO bid(userId, dateTime, amount, itemId)"
+										+ " VALUES((?), (?), (?), (?))";
+						
+								PreparedStatement psInsertBid = c.prepareStatement(queryInsertBid);
+								psInsertBid.setString(1, resultAutoBid.getString("userId"));
+								
+								psInsertBid.setString(2, formattedDate);
+								psInsertBid.setInt(3, currentBid);
+								psInsertBid.setString(4, itemId);
+								psInsertBid.executeUpdate();
+								
+							}else{
+								
+								System.out.println("Updating limitCrossed inside numRows == 1");
+								
+								String queryUpdate = "UPDATE autoBid SET isLimitCrossed=(?) WHERE autoBidId=(?)";
+								
+								PreparedStatement psUpdate = c.prepareStatement(queryUpdate);
+								psUpdate.setString(1, "Y");
+								psUpdate.setString(2, resultAutoBid.getString("autoBidId"));
+								
+								psUpdate.executeUpdate();
+								
+							}
 						}
+						
 						
 						break rec;
 						
@@ -223,43 +244,34 @@
 						multiFlag = 1;
 						System.out.println("Inside numRows > 1");
 						
+						int sameUserCount = 0;
+						
 						while(resultAutoBid.next()){
 							
-							System.out.println("Inside resultAutoBid.next loop");
-							System.out.println(resultAutoBid.getString("userId"));
+							String selectQuery2 = "SELECT * FROM auctionItem WHERE itemId=(?)";
 							
-							if(Integer.parseInt(resultAutoBid.getString("bidLimit")) > currentBid + incrementAmount){
+							PreparedStatement selectPs2 = c.prepareStatement(selectQuery2);
+							selectPs2.setString(1, itemId);
+							
+							ResultSet selectResult2 = selectPs2.executeQuery();
+							selectResult2.next();
+							
+							currentBuyer = selectResult2.getString("buyerId");
+							
+							bidPlacer = resultAutoBid.getString("userId");
+							
+							System.out.println("currentBuyer: " +currentBuyer);
+							System.out.println("bidPlacer: " +bidPlacer);
+							
+							if(currentBuyer.equals(bidPlacer)){
+								sameUserCount += 1;
+							}
+							
+							if(!currentBuyer.equals(bidPlacer)){
+								System.out.println("Inside resultAutoBid.next loop");
+								System.out.println(resultAutoBid.getString("userId"));
 								
-								/* UPDATE AUCTION ITEM TABLE: */
-								
-								String queryUpdate1 = "UPDATE auctionItem SET currentBid=(?), buyerId=(?) WHERE itemId=(?)";
-								
-								PreparedStatement psUpdate1 = c.prepareStatement(queryUpdate1);
-								psUpdate1.setInt(1, currentBid + incrementAmount);
-								psUpdate1.setString(2, resultAutoBid.getString("userId"));
-								psUpdate1.setString(3, itemId);
-								
-								psUpdate1.executeUpdate();
-								
-								currentBid += incrementAmount;
-								
-								System.out.println("Placing bid inside numRows > 1");
-								
-								String queryInsertBid = "INSERT INTO bid(userId, dateTime, amount, itemId)"
-										+ " VALUES((?), (?), (?), (?))";
-						
-								PreparedStatement psInsertBid = c.prepareStatement(queryInsertBid);
-								psInsertBid.setString(1, resultAutoBid.getString("userId"));
-								
-								psInsertBid.setString(2, formattedDate);
-								psInsertBid.setInt(3, currentBid);
-								psInsertBid.setString(4, itemId);
-								psInsertBid.executeUpdate();
-								
-								
-							}else{
-								
-								if(Integer.parseInt(resultAutoBid.getString("bidLimit")) == currentBid + incrementAmount){
+								if(Integer.parseInt(resultAutoBid.getString("bidLimit")) > currentBid + incrementAmount){
 									
 									/* UPDATE AUCTION ITEM TABLE: */
 									
@@ -286,7 +298,50 @@
 									psInsertBid.setInt(3, currentBid);
 									psInsertBid.setString(4, itemId);
 									psInsertBid.executeUpdate();
+									
+									
+								}else{
+									
+									if(Integer.parseInt(resultAutoBid.getString("bidLimit")) == currentBid + incrementAmount){
+										
+										/* UPDATE AUCTION ITEM TABLE: */
+										
+										String queryUpdate1 = "UPDATE auctionItem SET currentBid=(?), buyerId=(?) WHERE itemId=(?)";
+										
+										PreparedStatement psUpdate1 = c.prepareStatement(queryUpdate1);
+										psUpdate1.setInt(1, currentBid + incrementAmount);
+										psUpdate1.setString(2, resultAutoBid.getString("userId"));
+										psUpdate1.setString(3, itemId);
+										
+										psUpdate1.executeUpdate();
+										
+										currentBid += incrementAmount;
+										
+										System.out.println("Placing bid inside numRows > 1");
+										
+										String queryInsertBid = "INSERT INTO bid(userId, dateTime, amount, itemId)"
+												+ " VALUES((?), (?), (?), (?))";
 								
+										PreparedStatement psInsertBid = c.prepareStatement(queryInsertBid);
+										psInsertBid.setString(1, resultAutoBid.getString("userId"));
+										
+										psInsertBid.setString(2, formattedDate);
+										psInsertBid.setInt(3, currentBid);
+										psInsertBid.setString(4, itemId);
+										psInsertBid.executeUpdate();
+									
+										System.out.println("Updating limitCrossed inside numRows > 1");
+										
+										String queryUpdate = "UPDATE autoBid SET isLimitCrossed=(?) WHERE autoBidId=(?)";
+										
+										PreparedStatement psUpdate = c.prepareStatement(queryUpdate);
+										psUpdate.setString(1, "Y");
+										psUpdate.setString(2, resultAutoBid.getString("autoBidId"));
+										
+										psUpdate.executeUpdate();
+									
+								}else{
+									
 									System.out.println("Updating limitCrossed inside numRows > 1");
 									
 									String queryUpdate = "UPDATE autoBid SET isLimitCrossed=(?) WHERE autoBidId=(?)";
@@ -296,23 +351,16 @@
 									psUpdate.setString(2, resultAutoBid.getString("autoBidId"));
 									
 									psUpdate.executeUpdate();
-								
-							}else{
-								
-								System.out.println("Updating limitCrossed inside numRows > 1");
-								
-								String queryUpdate = "UPDATE autoBid SET isLimitCrossed=(?) WHERE autoBidId=(?)";
-								
-								PreparedStatement psUpdate = c.prepareStatement(queryUpdate);
-								psUpdate.setString(1, "Y");
-								psUpdate.setString(2, resultAutoBid.getString("autoBidId"));
-								
-								psUpdate.executeUpdate();
+									
+									}
 								
 								}
-							
 							}
-				
+							
+						}
+						
+						if(sameUserCount == numRows){
+							break rec;
 						}
 						
 						resultAutoBid = psAutoBid.executeQuery();

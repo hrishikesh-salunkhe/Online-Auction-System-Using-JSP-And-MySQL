@@ -19,7 +19,7 @@
 		
 		/* TOTAL EARNINGS: */
 		String query = "SELECT SUM(currentBid) as totalEarnings FROM auctionItem"
-					+ " WHERE isClosed='Y' AND buyerId IS NOT NULL";
+					+ " WHERE isClosed='Y'";
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		
